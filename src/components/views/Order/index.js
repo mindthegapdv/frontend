@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import * as moment from 'moment';
 import { useRouter } from 'useRouter';
-import { getFit, getServiceProviders, getOrder, updateOrder } from 'api';
+import { getFit, getServiceProviders, getOrder, updateOrder, generateToken } from 'api';
 import { Spin, Button, Typography } from 'antd'
 import { Table, Input, TimePicker, DatePicker } from "antd";
 import { Select } from 'antd';
@@ -20,37 +21,6 @@ const Section = ({ children, title, style }) => (
   </div>
 );
 
-const columns = [
-  {
-    title: 'Email',
-    dataIndex: 'email',
-    key: 'email',
-    render: (data, record) => {
-      return (<><span style={{ display: 'block' }}>{data}</span><span>{record.dietaryRequirements || ''}</span></>)
-    }
-  },
-  {
-    title: 'Status',
-    dataIndex: 'status',
-    key: 'status',
-    align: 'right',
-    render: (data) => {
-      const value = {
-        0: 'Unconfirmed',
-        1: 'Confirmed',
-        [-1]: 'Declined',
-      }[data];
-
-      const color = {
-        1: '#18A268',
-        0: '#A0A0A0',
-        [-1]: '#A0A0A0',
-      }[data];
-      return (<span style={{ color, display: 'block', textAlign: 'right' }}>{value}</span>)
-    }
-  }
-]
-
 const LabelledInput = ({ children, label }) => (
   <div style={{ display: "inline-block", padding: 8 }}>
     <span style={{ display: 'block', paddingBottom: 2 }}>{label}</span>
@@ -58,8 +28,10 @@ const LabelledInput = ({ children, label }) => (
   </div>
 )
 
+const validStatus = ['Open To Join', 'Order Placed', 'Preparing', 'Ready To Eat', 'Feedback', 'Closed'];
+
 export const Order = () => {
-  const { match } = useRouter();
+  const { match, history } = useRouter();
   const [loading, setLoading] = useState(true);
   const [order, setOrder] = useState(null);
   const [fit, setFit] = useState(0);
@@ -69,6 +41,49 @@ export const Order = () => {
 
   const [showAddGroup, setShowAddGroup] = useState(false);
   const [showAddParticipant, setShowAddParticipant] = useState(false);
+
+  const openPreferences = (userId) => {
+    generateToken(userId).then(token => {
+      history.push(`/preferences?token=${token}`);
+    })
+  }
+
+  const columns = [
+    {
+      title: 'Email',
+      dataIndex: 'email',
+      key: 'email',
+      render: (data, record) => {
+        return (<><span style={{ display: 'block' }}>{data}</span><span>{record.dietaryRequirements || ''}</span></>)
+      }
+    },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      key: 'status',
+      align: 'right',
+      render: (data) => {
+        const value = {
+          0: 'Unconfirmed',
+          1: 'Confirmed',
+          [-1]: 'Declined',
+        }[data];
+
+        const color = {
+          1: '#18A268',
+          0: '#A0A0A0',
+          [-1]: '#A0A0A0',
+        }[data];
+        return (<span style={{ color, display: 'block', textAlign: 'right' }}>{value}</span>)
+      }
+    },
+    {
+      title: '',
+      render: (data, record) => {
+        return (<Button onClick={() => openPreferences(record.id)}>Open Preferences</Button>)
+      }
+    }
+  ]
 
   useEffect(() => {
     getOrder(match.params.orderId).then(order => {
@@ -124,6 +139,9 @@ export const Order = () => {
   }
   const serviceProvider = serviceProviders.find(p => p.id === order.serviceProvider)
   const costPerPerson = serviceProvider && serviceProvider.costPerPerson
+  const nextStatus = validStatus[validStatus.indexOf(order.status) + 1];
+  const totalOrders = Math.floor((order.participants.length * 1.2 * (1+fit)));
+  const totalCost = totalOrders * costPerPerson;
   return (
     <div>
       <AddOrderGroup
@@ -142,9 +160,14 @@ export const Order = () => {
         <div>
           <Title>{order.name || `Order ${order.id}`}</Title>
         </div>
-        <Button type="primary" size="large" style={{ marginBottom: 19 }} onClick={persistUpdates}>
-          Update Order
-        </Button>
+        <div>
+          <Button type="primary" size="large" style={{ marginBottom: 19, marginRight: 19 }} onClick={persistUpdates}>
+            Save Order
+          </Button>
+          <Button type="secondary" size="large" style={{ marginBottom: 19 }} onClick={persistUpdates}>
+            Move Order to {nextStatus}
+          </Button>
+        </div>
       </div>
       <Section title="When should the food arrive?">
         <LabelledInput label="Date">
@@ -191,6 +214,17 @@ export const Order = () => {
         <div>
           <span style={{ display: 'block', color: '#444444', fontWeight: 'bold' }}>Estimated cost p.p.</span>
           <span style={{ fontSize: 18, color: '#444' }}>{ costPerPerson && `\$${costPerPerson}pp` }</span>
+        </div>
+      </Section>
+      <Section title="Ready to order?" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div>
+          <Select defaultValue={order.status} style={{ width: '100%' }} onChange={v => setOrder({ ...order, status: v })}>
+            {validStatus.map(s => <Option value={s}>{s}</Option>)}
+          </Select>
+        </div>
+        <div>
+          <span style={{ display: 'block', color: '#444444', fontWeight: 'bold' }}>Estimated cost</span>
+          <span style={{ fontSize: 18, color: '#444' }}>{ totalCost && `$${totalCost}` }</span>
         </div>
       </Section>
     </div>
