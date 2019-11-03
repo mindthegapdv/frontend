@@ -140,7 +140,9 @@ export const Order = () => {
   const serviceProvider = serviceProviders.find(p => p.id === order.serviceProvider)
   const costPerPerson = serviceProvider && serviceProvider.costPerPerson
   const nextStatus = validStatus[validStatus.indexOf(order.status) + 1];
-  const totalOrders = Math.floor((order.participants.length * 1.2 * (1+fit)));
+  const acceptedParticipants = order.participants.filter(p => p.status === 1);
+  const totalOrders = Math.floor((acceptedParticipants.length * 1.2 * (1+fit)));
+  const extraOrders = totalOrders - acceptedParticipants.length;
   const totalCost = totalOrders * costPerPerson;
   return (
     <div>
@@ -200,8 +202,8 @@ export const Order = () => {
           <span>Recommendation based on your historical waste</span>
         </div>
         <div>
-          <Input value={fit} /> extra meals for
-          <Input value={order.buffer} onChange={(e) => setOrder({ ...order, buffer: e.target.value })}/> people
+          You should order <Input style={{ display: 'inline', width: 100, margin: 10 }} value={extraOrders} disabled={true}/> extra meals for
+          <Input style={{ display: 'inline', width: 100, margin: 10 }} value={acceptedParticipants.length} disabled={true}/> people
         </div>
       </Section>
       <Section title="Order from" style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -223,8 +225,14 @@ export const Order = () => {
           </Select>
         </div>
         <div>
-          <span style={{ display: 'block', color: '#444444', fontWeight: 'bold' }}>Estimated cost</span>
-          <span style={{ fontSize: 18, color: '#444' }}>{ totalCost && `$${totalCost}` }</span>
+          <div>
+            <span style={{ display: 'block', color: '#444444', fontWeight: 'bold' }}>Total Orders</span>
+            <span style={{ fontSize: 18, color: '#444' }}>{ totalOrders && `${totalOrders}` }</span>
+          </div>
+          <div>
+            <span style={{ display: 'block', color: '#444444', fontWeight: 'bold' }}>Estimated cost</span>
+            <span style={{ fontSize: 18, color: '#444' }}>{ totalCost && `$${totalCost}` }</span>
+          </div>
         </div>
       </Section>
     </div>

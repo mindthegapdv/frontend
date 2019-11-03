@@ -28,7 +28,7 @@ export default ({ location }) => {
     if (token) {
       fetchUserPreferences(token).then(({ id, email, dietaryRequirements, group, costCode, lastOrder, orders }) => {
         setUser({ id, email, dietaryRequirements, group, costCode })
-        setOrders({ lastOrder: { id: 3, feedback: null }, nextOrders: orders })
+        setOrders({ lastOrder, nextOrders: orders })
       })
     }
   }, [])
