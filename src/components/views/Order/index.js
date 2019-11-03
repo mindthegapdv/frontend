@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import * as moment from 'moment';
 import { useRouter } from 'useRouter';
 import { getFit, getServiceProviders, getOrder, updateOrder, generateToken } from 'api';
@@ -9,7 +8,7 @@ import { Select } from 'antd';
 import { AddOrderGroup } from 'components/modals/AddOrderGroup';
 import { AddOrderParticipant } from 'components/modals/AddOrderParticipant';
 const { Option } = Select;
-const { Text, Title } = Typography;
+const { Title } = Typography;
 const { TextArea } = Input;
 
 const Section = ({ children, title, style }) => (
@@ -215,7 +214,7 @@ export const Order = () => {
         </div>
         <div>
           <span style={{ display: 'block', color: '#444444', fontWeight: 'bold' }}>Estimated cost p.p.</span>
-          <span style={{ fontSize: 18, color: '#444' }}>{ costPerPerson && `\$${costPerPerson}pp` }</span>
+          <span style={{ fontSize: 18, color: '#444' }}>{ costPerPerson && `$${costPerPerson}pp` }</span>
         </div>
       </Section>
       <Section title="Ready to order?" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>

@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import { Col } from 'antd'
 import { updateDietaryRequirements } from 'api'
 import { useToken } from 'hooks'
 
@@ -11,7 +10,7 @@ const DietaryRequirementsContainer = styled.div`
 `;
 
 const DietaryRequirements = styled.div`
-  
+
   padding: 2em;
   /* margin: 20px !important; */
   max-width: 450px;

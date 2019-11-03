@@ -1,9 +1,8 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import moment from 'moment'
-import { Collapse, Input, Icon, Switch } from 'antd'
+import { Collapse, Input, Switch } from 'antd'
 import plateIconPath from 'assets/images/plate-icon.png'
-import Toggle from './Toggle'
 import { updateOrderStatus } from 'api'
 import { useToken } from 'hooks'
 
@@ -61,24 +60,6 @@ const Day = styled.h4`
   margin-bottom: 0px;
 `
 
-const ToggleContainer = styled.div`
-  height: 40px;
-  width: 50px;
-  display: flex;
-`
-
-const RejectToggle = styled.div`
-  height: 100%;
-  flex: 50%;
-  background-color: grey;
-`
-
-const AcceptToggle = styled.div`
-  height: 100%;
-  flex: 50%;
-  background-color: blue;
-`
-
 const MenuTitle = styled.h5`
   font-size: 16px;
   font-weight: 700;
@@ -95,7 +76,7 @@ const MenuItem = styled.p`
 
 export default ({ order, user }) => {
   const { group, costCode } = user
-  const { name, status } = order
+  const { status } = order
   const { dt_scheduled } = order
   const day = moment(dt_scheduled).format('dddd')
   const date = moment(dt_scheduled).format('hh:mma - Do MMM YYYY')

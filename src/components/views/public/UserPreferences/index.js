@@ -21,7 +21,7 @@ export default ({ location }) => {
   useEffect(() => {
     const { token } = queryString.parse(location.search)
     window.localStorage.setItem('token', token)
-  }, [])
+  }, [location.search])
 
   useEffect(() => {
     const token = window.localStorage.getItem('token')

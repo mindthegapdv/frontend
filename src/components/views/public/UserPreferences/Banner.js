@@ -1,6 +1,5 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Col } from 'antd'
 import logoPath from 'assets/images/logo.png'
 
 const BannerWrapper = styled.div`

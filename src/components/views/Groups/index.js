@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'useRouter';
 import { Link } from 'react-router-dom';
-import * as moment from 'moment';
 import { getGroups } from 'api'
 import { Button, Typography } from 'antd';
 import { Table } from 'antd';
@@ -29,7 +27,6 @@ const columns = [
 ];
 
 export const Groups = () => {
-  const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [groups, setGroups] = useState([]);
   useEffect(() => {

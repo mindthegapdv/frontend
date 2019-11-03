@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Row, Col } from 'antd'
+import { Row } from 'antd'
 import Order from './Order'
 
 const OrderContainer = styled.div`
@@ -22,10 +22,6 @@ const TitleSection = styled(Row)`
   padding-bottom: 10px;
   font-size: 14px;
   font-family: "Nunito"
-`
-
-const Day = styled.h4`
-
 `
 
 export default ({ orders, user }) => (

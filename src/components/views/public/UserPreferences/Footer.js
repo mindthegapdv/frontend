@@ -17,7 +17,7 @@ const Footer = styled.div`
   width: 100%;
   padding: 24px;
   background-color: ${props => props.theme.colors.lightGrey};
-  
+
   font-family: "Nunito";
 `;
 
@@ -37,12 +37,6 @@ const Address = styled.p`
 
 const Logo = styled.img`
   height: 50px;
-`
-
-const Link = styled.p`
-  font-size: 14px;
-  text-decoration: underline;
-  margin-bottom: 5px;
 `
 
 export default () => (
